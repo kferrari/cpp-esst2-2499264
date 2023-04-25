@@ -11,16 +11,12 @@ int main()
 
     auto producer = std::thread([&]
     {
+    
         for(int i=0; i<=10 ; i++)
-        {
-            const int r = i*i;
-
+        {            
             std::this_thread::sleep_for(chrono::milliseconds(1000));
-
-            // TODO: Folgender Abschnitt gehört in den Consumer-Bereich
-            std::cout << "Incoming Result: ";
-            std::cout << r;
-            std::cout << std::endl;
+            promise.set_value(i*i);
+            promise = std::promise<int>();
         }
     });
 
@@ -32,8 +28,14 @@ int main()
         {
             // TODO: Consumer Code implementieren, bei dem promises und futures für die
             // Interthread-Kommunikation verwendet werden.
-            //std::cout << "Incoming Result: ";
-            break;
+
+
+            std::cout << "Incoming Result: ";
+            auto future = promise.get_future();
+            r = future.get();
+            
+            std::cout << r;
+            std::cout << std::endl;
         }
 
     });
