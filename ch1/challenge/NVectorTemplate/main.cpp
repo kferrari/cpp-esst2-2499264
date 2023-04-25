@@ -20,6 +20,13 @@ public:
     T1 operator*(const VectorND<T2, S> &other)
     {
         // TODO: Skalar-Produkt implementieren
+        T1 ret = 0;
+
+         for (int i=0; i<S; i++){
+            ret += (mData[i] * other[i]);
+        }
+
+        return ret;
     }
 
     void clear()
@@ -32,16 +39,25 @@ public:
     VectorND<T1, S> operator+(const VectorND<T2, S> &other)
     {
         // TODO: Vektor Addition implementieren
+        VectorND<T1, S> res;
+        res.clear();
+        for (int i=0; i<S; i++){
+            res[i] = (mData[i] + other[i]);
+        }
+
+        return res;
     }
 
     T1 operator[](const unsigned int idx) const
     {
         // TODO: Code für Subscript-Operator implementieren
+        return mData[idx];
     }
 
     T1& operator[](const unsigned int idx)
     {
         // TODO: Code für Subscript-Operator implementieren
+        return mData[idx];
     }
 
     unsigned int size() const
@@ -57,7 +73,17 @@ public:
 
 private:
 
-    // TODO: Implementierung von der fill Methode, die nur vom Konstruktor aufgerufen wird
+    // TODO: Implementierung von der fill Methode, die nur vom Konstruktor
+    // aufgerufen wird
+    void fill()
+    {}
+
+    template<typename TYPE, typename... A>
+    void fill(const TYPE x, A... args){
+        mData[mSizeSentinel++] = x;
+
+        fill(args...);
+    }
 
 
     std::array<T1, S> mData;
