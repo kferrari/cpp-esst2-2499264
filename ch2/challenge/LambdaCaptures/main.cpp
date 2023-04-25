@@ -24,57 +24,43 @@ int main()
     int resources = 1000;
     int amtToProduce = 10;
 
-    // TODO: consume beim Aufruf reduziert resources nicht. Lambda Notation muss verändert werden.
-    auto consume = [resources]() mutable {
-        resources--;
-    };
-
-    // TODO: produce beim Aufruf erhöht resources nicht. Lambda Notation muss verändert werden.
-    auto produce = [=]() mutable {
+    // DONE: consume beim Aufruf reduziert resources nicht. Lambda Notation muss verändert werden.
+    auto consume = [&resources] () {resources--;};
+    // DONE: produce beim Aufruf erhöht resources nicht. Lambda Notation muss verändert werden.
+    auto produce = [&]() {
         resources += amtToProduce;
     };
 
-    // TODO: Zeigt es die richtigen resources an? Irgendwie bleibt der Wert doch bei 1000.
+    // DONE: Zeigt es die richtigen resources an? Irgendwie bleibt der Wert doch bei 1000.
     // Herausfinden, was hier nicht stimmt.
-    auto display = [resources]() {
+    auto display = [&resources]() {
         cout << "Resources left: " << resources << endl;
     };
 
     consume();
     produce();
+    
     display();
 
     bool dispUpper = true;
 
     std::string text= "Hello World!\n";
 
-    // TODO: Folgende Zeilen Code wiederholen sich sehr oft.
-    // Finden Sie einen Weg die gleiche Logik beizubehalten, aber folgenden Code mit Hilfe eines Lambdas zu reduzieren.
-    if(dispUpper)
-    {
-        for(int i=0 ; i<text.size() ; i++)
-            displayUpper(text.at(i));
-    }
-    else
-    {
-        for(int i=0 ; i<text.size() ; i++)
-            displayNormal(text.at(i));
-    }
+    // DONE: Folgende Zeilen Code wiederholen sich sehr oft.
+    // Finden Sie einen Weg die gleiche Logik beizubehalten, aber folgenden Code
+    // mit Hilfe eines Lambdas zu reduzieren.
+    std::function<void (char)> dis;
 
+    auto displayFormatted = [&] () {
+        dis = (dispUpper) ? displayUpper : displayNormal;
+
+        for(int i=0 ; i<text.size() ; i++)
+            dis(text.at(i));
+    };
+
+    displayFormatted();
     dispUpper = false;
-
-    if(dispUpper)
-    {
-        for(int i=0 ; i<text.size() ; i++)
-            displayUpper(text.at(i));
-    }
-    else
-    {
-        for(int i=0 ; i<text.size() ; i++)
-            displayNormal(text.at(i));
-    }
-
-
+    displayFormatted();
 
     return 0;
 }
