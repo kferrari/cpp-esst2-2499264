@@ -3,6 +3,26 @@
 #include <vector>
 #include <exception>
 
+class IndexOverflowException : public std::exception {
+    public:
+        IndexOverflowException(const int size, const int requested){
+            mSize = size;
+            mRequested = requested;
+
+            message += "Index (" + std::to_string(mRequested);
+            message += ") out of bounds (" + std::to_string(mSize) + ")";
+        }
+
+        virtual const char * what() const throw(){
+            return message.c_str();
+        }
+
+    private:
+        int mSize;
+        int mRequested;
+        std::string message;
+};
+
 int main()
 {
     std::vector<std::string> data;
@@ -18,7 +38,8 @@ int main()
         	// Dieses what() soll dann im Block zu catch(const std::exception &e) aufgerufen werden.
         	// Erweitere auch die Fehlermeldung so, dass die Größe des Vectors und welcher Wert vom Entwickler:in kam, 
         	// mit in der Exception auftauchen.
-            throw "Sorry, your array is too short.";
+            IndexOverflowException indexOverflowException(data.size(), 10);
+            throw indexOverflowException;
         }
 
         std::cout << data.at(10) << std::endl;
